@@ -11,7 +11,7 @@ struct CanvasPage: Identifiable, Codable {
         id: UUID = UUID(),
         label: String = "Page 1",
         elements: [DrawingElement] = [],
-        backgroundColor: CodableColor = .init(red: 0.11, green: 0.11, blue: 0.12)
+        backgroundColor: CodableColor = .white
     ) {
         self.id = id
         self.label = label

@@ -5,7 +5,7 @@ import Combine
 final class AppState: ObservableObject {
     // MARK: - Tool State
     @Published var selectedTool: Tool = .pen
-    @Published var strokeColor: CodableColor = .white
+    @Published var strokeColor: CodableColor = .black
     @Published var strokeWidth: Double = 3.0
     @Published var opacity: Double = 1.0
     @Published var fontSize: Double = 24.0

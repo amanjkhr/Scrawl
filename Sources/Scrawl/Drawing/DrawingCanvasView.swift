@@ -81,7 +81,7 @@ final class DrawingCanvasView: NSView {
 
     private func drawGrid(in context: CGContext) {
         let gridSize: CGFloat = 40
-        let gridColor = NSColor.white.withAlphaComponent(0.04).cgColor
+        let gridColor = NSColor.black.withAlphaComponent(0.06).cgColor
 
         context.saveGState()
         context.setStrokeColor(gridColor)
