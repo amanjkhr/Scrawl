@@ -1,0 +1,18 @@
+# Build artifacts
+.build/
+*.o
+*.d
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+DerivedData/
+
+# macOS
+.DS_Store
+*.swp
+*~
+
+# App bundle (rebuild with build.sh)
+Scrawl.app/
