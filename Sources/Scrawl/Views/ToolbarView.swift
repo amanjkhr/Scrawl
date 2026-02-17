@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Floating tool palette with drawing tool buttons.
+/// Floating tool palette with drawing tool buttons — dark background for visibility on any canvas.
 struct ToolbarView: View {
     @ObservedObject var appState: AppState
 
@@ -26,12 +26,12 @@ struct ToolbarView: View {
         .frame(width: 48)
         .background(
             RoundedRectangle(cornerRadius: 14)
-                .fill(.ultraThinMaterial)
-                .shadow(color: .black.opacity(0.3), radius: 12, y: 4)
+                .fill(Color(nsColor: NSColor(white: 0.15, alpha: 0.92)))
+                .shadow(color: .black.opacity(0.35), radius: 12, y: 4)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 14)
-                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                .stroke(Color.white.opacity(0.12), lineWidth: 1)
         )
     }
 
@@ -58,13 +58,13 @@ struct ToolbarView: View {
                 .foregroundColor(
                     appState.selectedTool == tool
                         ? .white
-                        : .white.opacity(0.6)
+                        : .white.opacity(0.65)
                 )
                 .background(
                     RoundedRectangle(cornerRadius: 8)
                         .fill(
                             appState.selectedTool == tool
-                                ? Color.accentColor.opacity(0.8)
+                                ? Color.accentColor.opacity(0.85)
                                 : Color.clear
                         )
                 )
@@ -103,7 +103,7 @@ struct ToolbarView: View {
                     .fill(appState.strokeColor.color)
                     .frame(width: 22, height: 22)
                     .overlay(
-                        Circle().stroke(Color.white.opacity(0.5), lineWidth: 2)
+                        Circle().stroke(Color.white.opacity(0.6), lineWidth: 2)
                     )
                     .frame(width: 36, height: 36)
             }
@@ -119,7 +119,7 @@ struct ToolbarView: View {
             Image(systemName: icon)
                 .font(.system(size: 15, weight: .medium))
                 .frame(width: 36, height: 36)
-                .foregroundColor(enabled ? .white.opacity(0.7) : .white.opacity(0.2))
+                .foregroundColor(enabled ? .white.opacity(0.75) : .white.opacity(0.25))
         }
         .buttonStyle(.plain)
         .disabled(!enabled)
@@ -127,7 +127,7 @@ struct ToolbarView: View {
 
     private var divider: some View {
         Rectangle()
-            .fill(Color.white.opacity(0.1))
+            .fill(Color.white.opacity(0.15))
             .frame(height: 1)
             .padding(.horizontal, 8)
     }

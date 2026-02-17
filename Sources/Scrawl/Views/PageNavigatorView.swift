@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Page navigator sidebar with thumbnails.
+/// Page navigator sidebar with thumbnails — dark sidebar for contrast.
 struct PageNavigatorView: View {
     @ObservedObject var appState: AppState
 
@@ -10,14 +10,14 @@ struct PageNavigatorView: View {
             HStack {
                 Text("Pages")
                     .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.7))
+                    .foregroundColor(.white.opacity(0.8))
                 Spacer()
                 Button {
                     appState.addPage()
                 } label: {
                     Image(systemName: "plus.circle.fill")
                         .font(.system(size: 16))
-                        .foregroundColor(.white.opacity(0.6))
+                        .foregroundColor(.white.opacity(0.65))
                 }
                 .buttonStyle(.plain)
                 .help("Add Page (⌘N)")
@@ -25,7 +25,9 @@ struct PageNavigatorView: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
 
-            Divider().background(Color.white.opacity(0.1))
+            Rectangle()
+                .fill(Color.white.opacity(0.12))
+                .frame(height: 1)
 
             // Page List
             ScrollView(.vertical, showsIndicators: false) {
@@ -38,10 +40,7 @@ struct PageNavigatorView: View {
             }
         }
         .frame(width: 140)
-        .background(
-            Rectangle()
-                .fill(.ultraThinMaterial)
-        )
+        .background(Color(nsColor: NSColor(white: 0.18, alpha: 1.0)))
     }
 
     @ViewBuilder
@@ -58,10 +57,10 @@ struct PageNavigatorView: View {
                         // Show element count badge
                         Text("\(page.elements.count)")
                             .font(.system(size: 9, weight: .bold, design: .monospaced))
-                            .foregroundColor(.white.opacity(0.5))
+                            .foregroundColor(.white.opacity(0.7))
                             .padding(4)
                             .background(
-                                Capsule().fill(Color.black.opacity(0.3))
+                                Capsule().fill(Color.black.opacity(0.5))
                             )
                             .padding(4),
                         alignment: .topTrailing
@@ -71,7 +70,7 @@ struct PageNavigatorView: View {
                             .stroke(
                                 index == appState.currentPageIndex
                                     ? Color.accentColor
-                                    : Color.white.opacity(0.1),
+                                    : Color.white.opacity(0.2),
                                 lineWidth: index == appState.currentPageIndex ? 2 : 1
                             )
                     )
@@ -82,7 +81,7 @@ struct PageNavigatorView: View {
                     .foregroundColor(
                         index == appState.currentPageIndex
                             ? .white
-                            : .white.opacity(0.5)
+                            : .white.opacity(0.55)
                     )
             }
         }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Color picker popover with preset swatches and stroke controls.
+/// Color picker popover with preset swatches and stroke controls — dark panel for contrast.
 struct ColorPickerView: View {
     @ObservedObject var appState: AppState
     @State private var customColor: Color = .white
@@ -43,7 +43,7 @@ struct ColorPickerView: View {
                                         .stroke(
                                             appState.strokeColor == preset
                                                 ? Color.white
-                                                : Color.white.opacity(0.2),
+                                                : Color.white.opacity(0.25),
                                             lineWidth: appState.strokeColor == preset ? 2.5 : 1
                                         )
                                 )
@@ -72,7 +72,7 @@ struct ColorPickerView: View {
                     }
             }
 
-            Divider().background(Color.white.opacity(0.1))
+            Divider().background(Color.white.opacity(0.15))
 
             // Stroke Width
             VStack(alignment: .leading, spacing: 8) {
@@ -118,7 +118,7 @@ struct ColorPickerView: View {
 
             // Font Size (when text tool is active)
             if appState.selectedTool == .text {
-                Divider().background(Color.white.opacity(0.1))
+                Divider().background(Color.white.opacity(0.15))
 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
@@ -155,12 +155,12 @@ struct ColorPickerView: View {
         .frame(width: 220)
         .background(
             RoundedRectangle(cornerRadius: 14)
-                .fill(.ultraThinMaterial)
-                .shadow(color: .black.opacity(0.4), radius: 16, y: 6)
+                .fill(Color(nsColor: NSColor(white: 0.15, alpha: 0.95)))
+                .shadow(color: .black.opacity(0.45), radius: 16, y: 6)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 14)
-                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                .stroke(Color.white.opacity(0.12), lineWidth: 1)
         )
     }
 }

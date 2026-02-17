@@ -53,11 +53,11 @@ struct ContentView: View {
                                 Spacer()
                                 Text("\(Int(appState.canvasScale * 100))%")
                                     .font(.system(size: 12, weight: .bold, design: .monospaced))
-                                    .foregroundColor(.white.opacity(0.6))
+                                    .foregroundColor(.white.opacity(0.85))
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 5)
                                     .background(
-                                        Capsule().fill(.ultraThinMaterial)
+                                        Capsule().fill(Color(nsColor: NSColor(white: 0.15, alpha: 0.9)))
                                     )
                                     .padding(12)
                             }
