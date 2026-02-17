@@ -26,7 +26,7 @@ A native macOS whiteboarding app for instructors and presenters. Draw freehand, 
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/Scrawl.git
+git clone https://github.com/amanjkhr/Scrawl.git
 cd Scrawl
 
 # Build and install
@@ -61,6 +61,41 @@ cp -R Scrawl.app /Applications/
 | `⌘⇧E` | Export |
 | `⌘N` | New Page |
 | `Esc` | Exit Overlay |
+
+## Project Structure
+
+```
+Sources/Scrawl/
+├── App/                  # App entry, delegate, global state
+│   ├── ScrawlApp.swift   # @main, WindowGroup, MenuBarExtra, shortcuts
+│   ├── AppDelegate.swift # NSApplicationDelegate for dock/lifecycle
+│   └── AppState.swift    # ObservableObject: tools, pages, undo/redo
+├── Models/               # Data types
+│   ├── Tool.swift        # Tool enum (pen, highlighter, eraser, shapes, text, laser)
+│   ├── DrawingElement.swift  # Stroke, Shape, Text element types + CodableColor
+│   └── CanvasPage.swift  # Multi-page document model
+├── Drawing/              # Core rendering engine
+│   ├── DrawingEngine.swift           # CGContext rendering + hit testing
+│   ├── DrawingCanvasView.swift       # NSView with mouse/trackpad handling
+│   └── DrawingCanvasRepresentable.swift  # SwiftUI wrapper
+├── Views/                # UI components
+│   ├── ContentView.swift       # Main layout
+│   ├── ToolbarView.swift       # Floating glass tool palette
+│   ├── ColorPickerView.swift   # Color swatches + stroke controls
+│   ├── PageNavigatorView.swift # Page thumbnail sidebar
+│   └── TextEditorOverlay.swift # In-canvas text input
+├── Overlay/              # Screen overlay mode
+│   ├── OverlayWindowController.swift  # Transparent fullscreen NSWindow
+│   └── OverlayManager.swift          # Toggle overlay on/off
+└── Services/
+    └── ScrawlFileManager.swift  # Save/load .scrawl, export PNG/PDF
+```
+
+## Architecture
+
+The app uses **SwiftUI** for window management and UI composition, backed by a custom **AppKit `NSView`** canvas for high-performance Core Graphics drawing. The overlay mode creates a borderless transparent `NSWindow` at `.screenSaver` level to draw over any content on screen.
+
+All drawing elements are `Codable`, enabling native JSON serialization for the `.scrawl` file format.
 
 ## Tech Stack
 
