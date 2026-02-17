@@ -249,6 +249,38 @@ final class DrawingCanvasView: NSView {
         needsDisplay = true
     }
 
+    // MARK: - Keyboard Shortcuts
+
+    override func keyDown(with event: NSEvent) {
+        guard let state = appState else {
+            super.keyDown(with: event)
+            return
+        }
+
+        // Don't intercept shortcuts while editing text
+        if state.isEditingText {
+            super.keyDown(with: event)
+            return
+        }
+
+        let key = event.charactersIgnoringModifiers?.lowercased() ?? ""
+
+        switch key {
+        case "p": state.selectTool(.pen)
+        case "h": state.selectTool(.highlighter)
+        case "e": state.selectTool(.eraser)
+        case "t": state.selectTool(.text)
+        case "l": state.selectTool(.line)
+        case "r": state.selectTool(.rectangle)
+        case "o": state.selectTool(.ellipse)
+        case "a": state.selectTool(.arrow)
+        case "s": state.selectTool(.select)
+        case "x": state.selectTool(.laser)
+        default:
+            super.keyDown(with: event)
+        }
+    }
+
     // MARK: - Scroll (Zoom)
 
     override func magnify(with event: NSEvent) {
