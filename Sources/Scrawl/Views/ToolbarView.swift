@@ -5,7 +5,7 @@ struct ToolbarView: View {
     @ObservedObject var appState: AppState
 
     private let drawingTools: [Tool] = [.pen, .highlighter, .eraser]
-    private let shapeTools: [Tool] = [.line, .rectangle, .ellipse, .arrow]
+    private let shapeTools: [Tool] = [.line, .rectangle, .ellipse, .arrow, .triangle, .star, .diamond]
     private let otherTools: [Tool] = [.text, .laser, .select]
 
     var body: some View {

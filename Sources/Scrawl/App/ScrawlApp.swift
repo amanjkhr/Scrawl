@@ -114,7 +114,7 @@ struct ScrawlApp: App {
                 Button("Toggle Overlay Mode") {
                     overlayManager?.toggle()
                 }
-                .keyboardShortcut("o", modifiers: [.command, .shift])
+                .keyboardShortcut("b", modifiers: .command)
             }
         }
 
@@ -134,7 +134,7 @@ struct ScrawlApp: App {
 
         Divider()
 
-        Button("Toggle Overlay Mode  ⌘⇧O") {
+        Button("Toggle Overlay Mode  ⌘B") {
             overlayManager?.toggle()
         }
 

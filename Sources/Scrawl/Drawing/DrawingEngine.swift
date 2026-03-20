@@ -139,6 +139,65 @@ final class DrawingEngine {
             context.move(to: end)
             context.addLine(to: p2)
             context.strokePath()
+
+        case .triangle:
+            let path = CGMutablePath()
+            path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+            path.closeSubpath()
+            if shape.isFilled {
+                context.setFillColor(shape.color.cgColor)
+                context.addPath(path)
+                context.fillPath()
+            } else {
+                context.addPath(path)
+                context.strokePath()
+            }
+
+        case .diamond:
+            let path = CGMutablePath()
+            path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+            path.addLine(to: CGPoint(x: rect.maxX, y: rect.midY))
+            path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY))
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.midY))
+            path.closeSubpath()
+            if shape.isFilled {
+                context.setFillColor(shape.color.cgColor)
+                context.addPath(path)
+                context.fillPath()
+            } else {
+                context.addPath(path)
+                context.strokePath()
+            }
+
+        case .star:
+            let path = CGMutablePath()
+            let center = CGPoint(x: rect.midX, y: rect.midY)
+            let radius = min(rect.width, rect.height) / 2
+            let innerRadius = radius * 0.4
+            let startAngle: CGFloat = -.pi / 2
+            let points = 5
+            for i in 0..<points * 2 {
+                let angle = startAngle + CGFloat(i) * .pi / CGFloat(points)
+                let r = (i % 2 == 0) ? radius : innerRadius
+                let x = center.x + r * cos(angle)
+                let y = center.y + r * sin(angle)
+                if i == 0 {
+                    path.move(to: CGPoint(x: x, y: y))
+                } else {
+                    path.addLine(to: CGPoint(x: x, y: y))
+                }
+            }
+            path.closeSubpath()
+            if shape.isFilled {
+                context.setFillColor(shape.color.cgColor)
+                context.addPath(path)
+                context.fillPath()
+            } else {
+                context.addPath(path)
+                context.strokePath()
+            }
         }
 
         context.restoreGState()

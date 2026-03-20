@@ -9,6 +9,9 @@ enum Tool: String, CaseIterable, Identifiable {
     case rectangle
     case ellipse
     case arrow
+    case triangle
+    case star
+    case diamond
     case text
     case select
     case laser
@@ -24,6 +27,9 @@ enum Tool: String, CaseIterable, Identifiable {
         case .rectangle: return "Rectangle"
         case .ellipse: return "Ellipse"
         case .arrow: return "Arrow"
+        case .triangle: return "Triangle"
+        case .star: return "Star"
+        case .diamond: return "Diamond"
         case .text: return "Text"
         case .select: return "Select"
         case .laser: return "Laser"
@@ -39,6 +45,9 @@ enum Tool: String, CaseIterable, Identifiable {
         case .rectangle: return "rectangle"
         case .ellipse: return "circle"
         case .arrow: return "arrow.up.right"
+        case .triangle: return "triangle"
+        case .star: return "star"
+        case .diamond: return "rhombus"
         case .text: return "textformat"
         case .select: return "cursorarrow"
         case .laser: return "laser.burst"
@@ -54,6 +63,9 @@ enum Tool: String, CaseIterable, Identifiable {
         case .rectangle: return "r"
         case .ellipse: return "o"
         case .arrow: return "a"
+        case .triangle: return nil
+        case .star: return nil
+        case .diamond: return nil
         case .text: return "t"
         case .select: return "v"
         case .laser: return nil
@@ -67,7 +79,7 @@ enum Tool: String, CaseIterable, Identifiable {
 
     /// Whether this tool creates shapes.
     var isShapeTool: Bool {
-        self == .line || self == .rectangle || self == .ellipse || self == .arrow
+        self == .line || self == .rectangle || self == .ellipse || self == .arrow || self == .triangle || self == .star || self == .diamond
     }
 
     /// Default opacity for this tool.

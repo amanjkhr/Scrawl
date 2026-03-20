@@ -11,7 +11,7 @@ struct TextEditorOverlay: View {
                 // Text input
                 TextField("Type here...", text: $appState.editingTextValue, axis: .vertical)
                     .textFieldStyle(.plain)
-                    .font(.system(size: appState.fontSize))
+                    .font(.custom(appState.fontName, size: appState.fontSize))
                     .foregroundColor(appState.strokeColor.color)
                     .focused($isFocused)
                     .lineLimit(1...10)
@@ -26,6 +26,22 @@ struct TextEditorOverlay: View {
 
                 // Mini toolbar
                 HStack(spacing: 8) {
+                    Picker("", selection: $appState.fontName) {
+                        ForEach(["Helvetica Neue", "Arial", "Courier", "Chalkboard SE", "Marker Felt", "Times New Roman"], id: \.self) { font in
+                            Text(font).font(.custom(font, size: 12))
+                        }
+                    }
+                    .frame(width: 140)
+                    .labelsHidden()
+
+                    ColorPicker("", selection: Binding(
+                        get: { appState.strokeColor.color },
+                        set: { appState.strokeColor = CodableColor(NSColor($0)) }
+                    ))
+                    .labelsHidden()
+
+                    Spacer()
+
                     Button {
                         commitText()
                     } label: {
@@ -77,6 +93,7 @@ struct TextEditorOverlay: View {
             position: appState.editingTextPosition,
             fontSize: appState.fontSize,
             color: appState.strokeColor,
+            fontName: appState.fontName,
             isBold: appState.isBold,
             isItalic: appState.isItalic
         )

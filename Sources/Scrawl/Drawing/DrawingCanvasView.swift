@@ -16,6 +16,11 @@ final class DrawingCanvasView: NSView {
     private var currentShapePreview: ShapeData?
     private var isDragging = false
 
+    // Select tool state
+    private var selectedElementIndex: Int?
+    private var dragStartLocation: CGPoint?
+    private var originalElement: DrawingElement?
+
     // Laser pointer state
     private var laserPoints: [(point: CGPoint, timestamp: Date)] = []
     private var laserTimer: Timer?
@@ -47,11 +52,13 @@ final class DrawingCanvasView: NSView {
         guard let state = appState else { return }
 
         // Background
-        context.setFillColor(state.currentPage.backgroundColor.cgColor)
-        context.fill(bounds)
+        if !state.isOverlayActive {
+            context.setFillColor(state.currentPage.backgroundColor.cgColor)
+            context.fill(bounds)
 
-        // Draw grid (subtle)
-        drawGrid(in: context)
+            // Draw grid (subtle)
+            drawGrid(in: context)
+        }
 
         // Draw all committed elements
         drawingEngine.render(elements: state.currentPage.elements, in: context)
@@ -158,7 +165,7 @@ final class DrawingCanvasView: NSView {
             state.eraseAt(point: point)
             needsDisplay = true
 
-        case .line, .rectangle, .ellipse, .arrow:
+        case _ where state.selectedTool.isShapeTool:
             shapeOrigin = point
             currentShapePreview = ShapeData(
                 shapeType: shapeTypeFromTool(state.selectedTool),
@@ -180,7 +187,16 @@ final class DrawingCanvasView: NSView {
             startLaserTimer()
 
         case .select:
-            break // TODO: selection mode
+            if let element = drawingEngine.hitTest(point: point, elements: state.currentPage.elements),
+               let index = state.currentPage.elements.firstIndex(where: { $0.id == element.id }) {
+                state.saveUndoState()
+                selectedElementIndex = index
+                dragStartLocation = point
+                originalElement = element
+            }
+
+        default:
+            break
         }
     }
 
@@ -197,7 +213,7 @@ final class DrawingCanvasView: NSView {
             state.eraseAt(point: point)
             needsDisplay = true
 
-        case .line, .rectangle, .ellipse, .arrow:
+        case _ where state.selectedTool.isShapeTool:
             currentShapePreview?.size = CGSize(
                 width: point.x - shapeOrigin.x,
                 height: point.y - shapeOrigin.y
@@ -206,6 +222,36 @@ final class DrawingCanvasView: NSView {
 
         case .laser:
             laserPoints.append((point: point, timestamp: Date()))
+            needsDisplay = true
+
+        case .select:
+            guard let index = selectedElementIndex,
+                  let start = dragStartLocation,
+                  let original = originalElement else { return }
+            
+            let dx = point.x - start.x
+            let dy = point.y - start.y
+            
+            var updatedElement = original
+            
+            switch updatedElement {
+            case .stroke(var stroke):
+                for i in 0..<stroke.points.count {
+                    stroke.points[i].x += dx
+                    stroke.points[i].y += dy
+                }
+                updatedElement = .stroke(stroke)
+            case .shape(var shape):
+                shape.origin.x += dx
+                shape.origin.y += dy
+                updatedElement = .shape(shape)
+            case .text(var text):
+                text.position.x += dx
+                text.position.y += dy
+                updatedElement = .text(text)
+            }
+            
+            state.currentPage.elements[index] = updatedElement
             needsDisplay = true
 
         default:
@@ -231,7 +277,7 @@ final class DrawingCanvasView: NSView {
             }
             currentStrokePoints.removeAll()
 
-        case .line, .rectangle, .ellipse, .arrow:
+        case _ where state.selectedTool.isShapeTool:
             if let preview = currentShapePreview,
                abs(preview.size.width) > 2 || abs(preview.size.height) > 2 {
                 onElementAdded?(.shape(preview))
@@ -241,6 +287,11 @@ final class DrawingCanvasView: NSView {
         case .laser:
             // Laser fades naturally
             break
+
+        case .select:
+            selectedElementIndex = nil
+            dragStartLocation = nil
+            originalElement = nil
 
         default:
             break
@@ -297,6 +348,9 @@ final class DrawingCanvasView: NSView {
         case .rectangle: return .rectangle
         case .ellipse: return .ellipse
         case .arrow: return .arrow
+        case .triangle: return .triangle
+        case .star: return .star
+        case .diamond: return .diamond
         default: return .line
         }
     }

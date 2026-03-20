@@ -6,6 +6,7 @@ final class OverlayWindowController: NSObject {
     private var overlayWindow: NSWindow?
     private var canvasView: DrawingCanvasView?
     private weak var appState: AppState?
+    private var hiddenWindows: [NSWindow] = []
 
     init(appState: AppState) {
         self.appState = appState
@@ -16,6 +17,13 @@ final class OverlayWindowController: NSObject {
     func showOverlay() {
         guard overlayWindow == nil else { return }
         guard let screen = NSScreen.main else { return }
+
+        // Hide other windows to prevent them from appearing over slides
+        hiddenWindows.removeAll()
+        for activeWindow in NSApp.windows where activeWindow.isVisible {
+            hiddenWindows.append(activeWindow)
+            activeWindow.orderOut(nil)
+        }
 
         let window = NSWindow(
             contentRect: screen.frame,
@@ -30,20 +38,16 @@ final class OverlayWindowController: NSObject {
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         window.ignoresMouseEvents = false
 
-        // Create canvas view for overlay
-        let canvas = DrawingCanvasView(frame: screen.frame)
-        canvas.appState = appState
+        if let appState = appState {
+            let overlayContentView = OverlayContentView(appState: appState)
+            let hostingView = NSHostingView(rootView: overlayContentView)
+            hostingView.frame = screen.frame
+            hostingView.wantsLayer = true
+            hostingView.layer?.backgroundColor = .clear
 
-        // Overlay canvas is transparent
-        canvas.wantsLayer = true
-        canvas.layer?.backgroundColor = .clear
-
-        // Override draw method behavior for overlay
-        canvas.onElementAdded = { [weak self] element in
-            self?.appState?.addElement(element)
+            window.contentView = hostingView
         }
-
-        window.contentView = canvas
+        appState?.isOverlayActive = true
         window.makeKeyAndOrderFront(nil)
 
         // Add escape key monitor
@@ -56,7 +60,6 @@ final class OverlayWindowController: NSObject {
         }
 
         self.overlayWindow = window
-        self.canvasView = canvas
     }
 
     /// Hide and release the overlay window.
@@ -65,6 +68,12 @@ final class OverlayWindowController: NSObject {
         overlayWindow = nil
         canvasView = nil
         appState?.isOverlayActive = false
+
+        // Restore previously hidden windows
+        for activeWindow in hiddenWindows {
+            activeWindow.makeKeyAndOrderFront(nil)
+        }
+        hiddenWindows.removeAll()
     }
 
     /// Toggle overlay on/off.
@@ -73,7 +82,6 @@ final class OverlayWindowController: NSObject {
             hideOverlay()
         } else {
             showOverlay()
-            appState?.isOverlayActive = true
         }
     }
 }

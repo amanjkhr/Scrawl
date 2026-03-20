@@ -9,6 +9,7 @@ final class AppState: ObservableObject {
     @Published var strokeWidth: Double = 3.0
     @Published var opacity: Double = 1.0
     @Published var fontSize: Double = 24.0
+    @Published var fontName: String = "Helvetica Neue"
     @Published var isBold: Bool = false
     @Published var isItalic: Bool = false
 

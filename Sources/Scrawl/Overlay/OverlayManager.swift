@@ -8,6 +8,23 @@ final class OverlayManager: ObservableObject {
     init(appState: AppState) {
         self.appState = appState
         self.controller = OverlayWindowController(appState: appState)
+        checkAccessibility()
+        setupGlobalShortcut()
+    }
+    
+    private func checkAccessibility() {
+        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
+        _ = AXIsProcessTrustedWithOptions(options as CFDictionary)
+    }
+
+    private func setupGlobalShortcut() {
+        GlobalHotkeyManager.shared.toggleAction = { [weak self] in
+            DispatchQueue.main.async {
+                self?.toggle()
+            }
+        }
+        // 11 is 'B', 256 is cmdKey
+        GlobalHotkeyManager.shared.register(keyCode: 11, carbonModifiers: 256)
     }
 
     func toggle() {

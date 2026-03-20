@@ -26,6 +26,9 @@ enum ShapeType: String, Codable, CaseIterable {
     case rectangle
     case ellipse
     case arrow
+    case triangle
+    case star
+    case diamond
 }
 
 // MARK: - Drawing Element
